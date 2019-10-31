@@ -7,33 +7,6 @@ import (
 	"time"
 )
 
-// func syncAuth0Users() ([]map[string]interface{}, error) {
-// 	accessToken := getAuth0AccessToken()
-// 	params := map[string]interface{}{
-// 		"format": "json",
-// 	}
-// 	payload, _ := json.Marshal(params)
-// 	url := fmt.Sprintf("%s/api/%s/jobs/users-exports", common.Auth0Domain, common.auth0APINamespace)
-// 	req, _ := http.NewRequest("POST", url, bytes.NewReader(payload))
-// 	req.Header.Add("authorization", fmt.Sprintf("bearer %s", *accessToken))
-// 	req.Header.Add("content-type", "application/json")
-// 	res, err := http.DefaultClient.Do(req)
-// 	if err != nil {
-// 		log.Warningf("failed to vend Auth0 API token; %s", err.Error())
-// 		return nil, err
-// 	}
-// 	defer res.Body.Close()
-// 	body, _ := ioutil.ReadAll(res.Body)
-// 	log.Debugf("%s", string(body))
-// 	resp := make([]map[string]interface{}, 0)
-// 	err = json.Unmarshal(body, &resp)
-// 	if err != nil {
-// 		log.Warningf("failed to unmarshal Auth0 list users API response; %s", err.Error())
-// 		return nil, err
-// 	}
-// 	return resp, nil
-// }
-
 // GetUser returns an auth0 user by id
 func GetUser(auth0UserID string) (interface{}, error) {
 	client, err := NewAuth0APIClient()
