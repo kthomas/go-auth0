@@ -2,15 +2,11 @@ package auth0
 
 import (
 	"os"
-	"time"
 
 	logger "github.com/kthomas/go-logger"
 )
 
 const defaultauth0APINamespace = "v2"
-
-const defaultAuthorizationIssuer = "ident"
-const defaultAuthorizationTTL = time.Hour * 24
 
 var (
 	// auth0APINamespace is the configured Auth0 API namespace (i.e., 'v2')
