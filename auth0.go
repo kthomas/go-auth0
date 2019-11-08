@@ -30,6 +30,30 @@ func GetUser(auth0UserID string) (interface{}, error) {
 	return resp, nil
 }
 
+// GetUserByEmail returns an auth0 user by email address
+func GetUserByEmail(email string) (interface{}, error) {
+	client, err := NewAuth0APIClient()
+	if err != nil {
+		log.Warningf("failed to fetch auth0 user by email: %s; %s", email, err.Error())
+		return nil, err
+	}
+
+	status, resp, err := client.Get("users-by-email", map[string]interface{}{
+		"email": email,
+	})
+	if err != nil {
+		log.Warningf("failed to fetch auth0 user by email: %s; %s", email, err.Error())
+		return nil, err
+	}
+	if status != 200 {
+		msg := fmt.Sprintf("failed to fetch auth0 user by email: %s; status code: %d", email, status)
+		log.Warning(msg)
+		return nil, errors.New(msg)
+	}
+
+	return resp, nil
+}
+
 // CreateUser creates an auth0
 func CreateUser(params map[string]interface{}) (interface{}, error) {
 	client, err := NewAuth0APIClient()
