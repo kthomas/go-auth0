@@ -2,6 +2,7 @@ package auth0
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -21,8 +22,53 @@ func GetUser(auth0UserID string) (interface{}, error) {
 		return nil, err
 	}
 	if status != 200 {
-		log.Warningf("failed to fetch auth0 user; %s", err.Error())
+		msg := fmt.Sprintf("failed to fetch auth0 user; status code: %d", status)
+		log.Warning(msg)
+		return nil, errors.New(msg)
+	}
+
+	return resp, nil
+}
+
+// CreateUser creates an auth0
+func CreateUser(params map[string]interface{}) (interface{}, error) {
+	client, err := NewAuth0APIClient()
+	if err != nil {
+		log.Warningf("failed to create auth0 user; %s", err.Error())
 		return nil, err
+	}
+
+	status, resp, err := client.Post("users", params)
+	if err != nil {
+		log.Warningf("failed to create auth0 user; %s", err.Error())
+		return nil, err
+	}
+	if status != 200 {
+		msg := fmt.Sprintf("failed to create auth0 user; status code: %d", status)
+		log.Warning(msg)
+		return nil, errors.New(msg)
+	}
+
+	return resp, nil
+}
+
+// DeleteUser creates an auth0
+func DeleteUser(auth0UserID string) (interface{}, error) {
+	client, err := NewAuth0APIClient()
+	if err != nil {
+		log.Warningf("failed to delete auth0 user; %s", err.Error())
+		return nil, err
+	}
+
+	status, resp, err := client.Delete(fmt.Sprintf("users/%s", auth0UserID))
+	if err != nil {
+		log.Warningf("failed to delete auth0 user; %s", err.Error())
+		return nil, err
+	}
+	if status != 204 {
+		msg := fmt.Sprintf("failed to delete auth0 user; status code: %d", status)
+		log.Warning(msg)
+		return nil, errors.New(msg)
 	}
 
 	return resp, nil
@@ -50,8 +96,9 @@ func ExportUsers() ([]interface{}, error) {
 		return nil, err
 	}
 	if status != 200 {
-		log.Warningf("failed to export auth0 users; status: %d; response: %s", status, resp)
-		return nil, err
+		msg := fmt.Sprintf("failed to export auth0 users; status: %d; response: %s", status, resp)
+		log.Warning(msg)
+		return nil, errors.New(msg)
 	}
 
 	users := make([]interface{}, 0)
@@ -111,8 +158,9 @@ func GetJob(auth0JobID string) (interface{}, error) {
 		return nil, err
 	}
 	if status != 200 {
-		log.Warningf("failed to fetch auth0 job; %s", err.Error())
-		return nil, err
+		msg := fmt.Sprintf("failed to fetch auth0 job; %s", err.Error())
+		log.Warning(msg)
+		return nil, errors.New(msg)
 	}
 
 	return resp, nil
