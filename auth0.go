@@ -68,7 +68,7 @@ func CreateUser(params map[string]interface{}) (interface{}, error) {
 		return nil, err
 	}
 	if status != 201 {
-		msg := fmt.Sprintf("failed to create auth0 user; status code: %d", status)
+		msg := fmt.Sprintf("failed to create auth0 user; status code: %d; resp: %s", status, resp)
 		log.Warning(msg)
 		return nil, errors.New(msg)
 	}
