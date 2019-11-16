@@ -111,6 +111,7 @@ func ExportUsers() ([]interface{}, error) {
 			map[string]string{"name": "user_id"},
 			map[string]string{"name": "name"},
 			map[string]string{"name": "email"},
+			map[string]string{"name": "created_at"},
 			map[string]string{"name": "app_metadata"},
 		},
 		"format": "json",
