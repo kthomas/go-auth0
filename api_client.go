@@ -258,6 +258,12 @@ func (c *Auth0APIClient) GetWithTLSClientConfig(uri string, params map[string]in
 	return c.sendRequestWithTLSClientConfig("GET", url, defaultContentType, params, tlsClientConfig)
 }
 
+// Patch constructs and synchronously sends an API PATCH request
+func (c *Auth0APIClient) Patch(uri string, params map[string]interface{}) (status int, response interface{}, err error) {
+	url := c.buildURL(uri)
+	return c.sendRequest("PATCH", url, defaultContentType, params)
+}
+
 // Post constructs and synchronously sends an API POST request
 func (c *Auth0APIClient) Post(uri string, params map[string]interface{}) (status int, response interface{}, err error) {
 	url := c.buildURL(uri)

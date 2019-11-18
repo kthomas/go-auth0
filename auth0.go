@@ -54,7 +54,7 @@ func GetUserByEmail(email string) (interface{}, error) {
 	return resp, nil
 }
 
-// CreateUser creates an auth0
+// CreateUser creates an auth0 user
 func CreateUser(params map[string]interface{}) (interface{}, error) {
 	client, err := NewAuth0APIClient()
 	if err != nil {
@@ -76,7 +76,29 @@ func CreateUser(params map[string]interface{}) (interface{}, error) {
 	return resp, nil
 }
 
-// DeleteUser creates an auth0
+// UpdateUser updates an auth0 user
+func UpdateUser(auth0UserID string, params map[string]interface{}) (interface{}, error) {
+	client, err := NewAuth0APIClient()
+	if err != nil {
+		log.Warningf("failed to update auth0 user; %s", err.Error())
+		return nil, err
+	}
+
+	status, resp, err := client.Patch(fmt.Sprintf("users/%s", auth0UserID), params)
+	if err != nil {
+		log.Warningf("failed to update auth0 user; %s", err.Error())
+		return nil, err
+	}
+	if status != 201 {
+		msg := fmt.Sprintf("failed to update auth0 user; status code: %d; resp: %s", status, resp)
+		log.Warning(msg)
+		return nil, errors.New(msg)
+	}
+
+	return resp, nil
+}
+
+// DeleteUser deletes an auth0 user
 func DeleteUser(auth0UserID string) (interface{}, error) {
 	client, err := NewAuth0APIClient()
 	if err != nil {
