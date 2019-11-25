@@ -89,7 +89,7 @@ func UpdateUser(auth0UserID string, params map[string]interface{}) (interface{},
 		log.Warningf("failed to update auth0 user; %s", err.Error())
 		return nil, err
 	}
-	if status != 201 {
+	if status != 200 {
 		msg := fmt.Sprintf("failed to update auth0 user; status code: %d; resp: %s", status, resp)
 		log.Warning(msg)
 		return nil, errors.New(msg)
