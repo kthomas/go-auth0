@@ -33,7 +33,12 @@ func init() {
 	if lvl == "" {
 		lvl = "INFO"
 	}
-	log = logger.NewLogger("auth0", lvl, true)
+	var endpoint *string
+	if os.Getenv("SYSLOG_ENDPOINT") != "" {
+		endpt := os.Getenv("SYSLOG_ENDPOINT")
+		endpoint = &endpt
+	}
+	log = logger.NewLogger("auth0", lvl, endpoint)
 }
 
 // RequireAuth0 reads the Auth0 configuration from the environment
