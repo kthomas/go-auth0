@@ -11,13 +11,13 @@ import (
 
 // AuthenticateUser authenticates an auth0 user
 func AuthenticateUser(email, password string) (interface{}, error) {
-	client, err := NewAuth0APIClient()
+	client, err := NewAuth0APIClientWithPath("oauth")
 	if err != nil {
 		log.Warningf("failed to create auth0 user; %s", err.Error())
 		return nil, err
 	}
 
-	status, resp, err := client.Post("oauth/ro", map[string]interface{}{
+	status, resp, err := client.Post("ro", map[string]interface{}{
 		"client_id":  os.Getenv("AUTH0_CLIENT_ID"),
 		"username":   email,
 		"password":   password,

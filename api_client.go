@@ -40,6 +40,12 @@ type Auth0APIClient struct {
 // NewAuth0APIClient initializes a Auth0APIClient to interact with the Auth0 API using the
 // environment-configured Auth0 API credentials.
 func NewAuth0APIClient() (*Auth0APIClient, error) {
+	return NewAuth0APIClientWithPath(fmt.Sprintf("api/%s", auth0APINamespace))
+}
+
+// NewAuth0APIClientWithPath initializes a Auth0APIClient to interact with the Auth0 API using the
+// environment-configured Auth0 API credentials and given path.
+func NewAuth0APIClientWithPath(path string) (*Auth0APIClient, error) {
 	apiURL, err := url.Parse(auth0Domain)
 	if err != nil {
 		log.Warningf("Failed to parse auth0 API base url; %s", err.Error())
@@ -49,7 +55,7 @@ func NewAuth0APIClient() (*Auth0APIClient, error) {
 	return &Auth0APIClient{
 		Host:                apiURL.Host,
 		Scheme:              apiURL.Scheme,
-		Path:                fmt.Sprintf("api/%s", auth0APINamespace),
+		Path:                path,
 		OAuthAccessTokenURL: fmt.Sprintf("%s/oauth/token", auth0Domain),
 	}, nil
 }
