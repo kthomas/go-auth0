@@ -4,9 +4,38 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"time"
 )
+
+// AuthenticateUser authenticates an auth0 user
+func AuthenticateUser(email, password string) (interface{}, error) {
+	client, err := NewAuth0APIClient()
+	if err != nil {
+		log.Warningf("failed to create auth0 user; %s", err.Error())
+		return nil, err
+	}
+
+	status, resp, err := client.Post("oauth/ro", map[string]interface{}{
+		"client_id":  os.Getenv("AUTH0_CLIENT_ID"),
+		"username":   email,
+		"password":   password,
+		"connection": "Username-Password-Authentication",
+		"scope":      "openid",
+	})
+	if err != nil {
+		log.Warningf("failed to authenticate auth0 user; %s", err.Error())
+		return nil, err
+	}
+	if status != 201 {
+		msg := fmt.Sprintf("failed to authenticate auth0 user; status code: %d; resp: %s", status, resp)
+		log.Warning(msg)
+		return nil, errors.New(msg)
+	}
+
+	return resp, nil
+}
 
 // GetUser returns an auth0 user by id
 func GetUser(auth0UserID string) (interface{}, error) {
