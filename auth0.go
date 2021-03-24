@@ -4,9 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/form3tech-oss/jwt-go"
 )
 
 // AuthenticateUser authenticates an auth0 user
@@ -240,4 +244,55 @@ func GetJob(auth0JobID string) (interface{}, error) {
 	}
 
 	return resp, nil
+}
+
+type JWTKeys struct {
+	Keys []*JSONWebKeys `json:"keys"`
+}
+
+type JSONWebKeys struct {
+	Kty string   `json:"kty"`
+	Kid string   `json:"kid"`
+	Use string   `json:"use"`
+	N   string   `json:"n"`
+	E   string   `json:"e"`
+	X5c []string `json:"x5c"`
+}
+
+// GetJWKs
+func GetJWKs() (map[string]interface{}, error) {
+	apiURL, err := url.Parse(auth0Domain)
+	if err != nil {
+		log.Warningf("Failed to parse auth0 API base url; %s", err.Error())
+		return nil, err
+	}
+
+	url := fmt.Sprintf("https://%s/.well-known/jwks.json", apiURL.Host)
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Warningf("failed to fetch auth0 JWT keys; %s", err.Error())
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	keys := &JWTKeys{}
+	err = json.NewDecoder(resp.Body).Decode(&keys)
+	if err != nil {
+		log.Warningf("failed to decode auth0 JWT keys; %s", err.Error())
+		return nil, err
+	}
+
+	keyMap := map[string]interface{}{}
+
+	for i, _ := range keys.Keys {
+		cert := "-----BEGIN CERTIFICATE-----\n" + keys.Keys[i].X5c[0] + "\n-----END CERTIFICATE-----"
+		result, err := jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
+		if err != nil {
+			log.Warningf("failed to parse auth0 public key; %s", err.Error())
+			continue
+		}
+		keyMap[keys.Keys[i].Kid] = result
+	}
+
+	return keyMap, nil
 }
