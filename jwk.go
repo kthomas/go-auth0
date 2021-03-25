@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"os"
 
 	"github.com/form3tech-oss/jwt-go"
@@ -36,13 +35,7 @@ func GetJWKs() (map[string]interface{}, error) {
 		}
 	}
 
-	apiURL, err := url.Parse(domain)
-	if err != nil {
-		log.Warningf("failed to parse auth0 API base url; %s", err.Error())
-		return nil, err
-	}
-
-	url := fmt.Sprintf("https://%s/.well-known/jwks.json", apiURL.Host)
+	url := fmt.Sprintf("https://%s/.well-known/jwks.json", domain)
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Warningf("failed to fetch auth0 JWT keys; %s", err.Error())
