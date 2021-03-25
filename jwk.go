@@ -59,7 +59,7 @@ func GetJWKs() (map[string]interface{}, error) {
 			log.Warningf("failed to parse auth0 public key; %s", err.Error())
 			continue
 		}
-		keyMap[keys.Keys[i].Kid] = result
+		keyMap[keys.Keys[i].Kid] = *result
 		log.Debugf("resolved auth0 JWK: %s", keys.Keys[i].Kid)
 	}
 
