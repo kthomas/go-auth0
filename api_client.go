@@ -60,7 +60,7 @@ func NewAuth0APIClientWithPath(path string) (*Auth0APIClient, error) {
 		Host:                apiURL.Host,
 		Scheme:              apiURL.Scheme,
 		Path:                path,
-		OAuthAccessTokenURL: fmt.Sprintf("%s/oauth/token", auth0Domain),
+		OAuthAccessTokenURL: fmt.Sprintf("%s/oauth/token", domain),
 	}, nil
 }
 
