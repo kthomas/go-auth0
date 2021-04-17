@@ -46,7 +46,11 @@ func NewAuth0APIClient() (*Auth0APIClient, error) {
 // NewAuth0APIClientWithPath initializes a Auth0APIClient to interact with the Auth0 API using the
 // environment-configured Auth0 API credentials and given path.
 func NewAuth0APIClientWithPath(path string) (*Auth0APIClient, error) {
-	apiURL, err := url.Parse(auth0Domain)
+	domain := auth0Domain
+	if !strings.HasPrefix(domain, "https://") {
+		domain = fmt.Sprintf("https://%s", domain)
+	}
+	apiURL, err := url.Parse(domain)
 	if err != nil {
 		log.Warningf("Failed to parse auth0 API base url; %s", err.Error())
 		return nil, err
